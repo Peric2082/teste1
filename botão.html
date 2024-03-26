@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Botão de Download</title>
+  <style>
+    body {
+      background-color: black;
+      color: white;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1 {
+      font-size: 24px;
+      text-align: center;
+      margin-top: 50px;
+      color: red;
+    }
+
+    p {
+      font-size: 16px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .subscribe-button {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .download-button {
+      text-align: center;
+    }
+
+    button {
+      background-color: red;
+      border: none;
+      color: white;
+      cursor: not-allowed;
+      font-size: 18px;
+      padding: 15px 30px;
+      border-radius: 5px;
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    button.enabled {
+      background-color: darkred;
+      cursor: pointer;
+    }
+
+    button.enabled:hover {
+      background-color: #ff3333;
+    }
+  </style>
+  <script src="https://apis.google.com/js/platform.js"></script>
+  <script>
+    function checkSubscription() {
+      gapi.load('client:auth2', function() {
+        gapi.client.init({
+          apiKey: 'AIzaSyAWuz0cG-n1zcUF9cfL-N4uROFBxy8SAlY',
+          clientId: '863841229703-4fmgns1h6oe2nc1vd2jkcft7lvtrj0pu.apps.googleusercontent.com',
+          discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest"],
+          scope: 'https://www.googleapis.com/auth/youtube.readonly'
+        }).then(function() {
+          return gapi.auth2.getAuthInstance().signIn();
+        }).then(function() {
+          const request = gapi.client.youtube.subscriptions.list({
+            mine: true,
+            part: 'snippet',
+            forChannelId: 'UC4Nwb5kkTDsgaGKF1fGZVfQ'
+          });
+
+          request.execute(function(response) {
+            const subscriptions = response.result.items;
+            const downloadButton = document.querySelector('#download');
+            if (subscriptions && subscriptions.length > 0) {
+              downloadButton.disabled = false;
+              downloadButton.classList.add('enabled');
+            } else {
+              downloadButton.disabled = true;
+              downloadButton.classList.remove('enabled');
+            }
+          });
+        });
+      });
+    }
+  </script>
+</head>
+
+<body>
+  <h1>Baixe nosso conteúdo exclusivo!</h1>
+  <p>Para fazer o download, por favor, inscreva-se no nosso canal do YouTube:</p>
+  <div class="subscribe-button">
+    <a href="https://www.youtube.com/channel/UC4Nwb5kkTDsgaGKF1fGZVfQ" target="_blank">Inscreva-se</a>
+  </div>
+  <div class="download-button">
+    <button id="download" disabled onclick="redirectToDownload()">Download</button>
+  </div>
+  <script src="https://apis.google.com/js/platform.js?onload=checkSubscription" async defer></script>
+  <script>
+    function redirectToDownload() {
+      window.location.href = 'https://uptodown-android.br.uptodown.com/android/download';
+    }
+  </script>
+</body>
+
+</html>
